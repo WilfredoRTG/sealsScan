@@ -1,16 +1,19 @@
+from scipy import ndimage
 import cv2
 import os
+import numpy as np
 
 PATH_TO_DATASET = 'dataSet/'
 PATH_TO_OUTPUT = 'cropImages/'
 SIZE_OF_FRAGMENT = 500
 
-# Read image
+# Read images from dataSet folder and crop them by fragments of 500x500px
 def cropImage():
     for index, filename in enumerate(os.listdir(PATH_TO_DATASET)):
-        pathOutput = PATH_TO_OUTPUT + 'image' + str(index) + '/'
+        pathOutput = PATH_TO_OUTPUT + 'image' + str(index+1) + '/'
         os.mkdir(pathOutput)
         fragment(pathOutput, filename)
+
 
 def fragment(pathOutput, filename):
     img = cv2.imread(PATH_TO_DATASET + filename)
@@ -19,13 +22,27 @@ def fragment(pathOutput, filename):
     i = 0
     j = 0
     fragment = 0
-    while i<width:
-        while j<height:
+    while i < width:
+        while j < height:
             fragment += 1
             crop_img = img[i:i+SIZE_OF_FRAGMENT, j:j+SIZE_OF_FRAGMENT]
-            cv2.imwrite(pathOutput + 'fragment' + str(fragment) + '.jpg', crop_img)
+            cv2.imwrite(pathOutput + 'fragment' +
+                        str(fragment) + '.jpg', crop_img)
             j += SIZE_OF_FRAGMENT
         i += SIZE_OF_FRAGMENT
         j = 0
 
+
 cropImage()
+
+# img = cv2.imread(PATH_TO_OUTPUT+'image13/fragment37.jpg',
+#                  flags=cv2.IMREAD_COLOR)
+
+# kernel = np.array([[0, -1, 0],
+#                    [-1, 5, -1],
+#                    [0, -1, 0]])
+
+# image_sharp = cv2.filter2D(src=img, ddepth=-1, kernel=kernel)
+# imgtest = 255 - image_sharp
+# cv2.imshow('image', imgtest)
+# cv2.waitKey(0)
