@@ -33,16 +33,67 @@ def fragment(pathOutput, filename):
         j = 0
 
 
-cropImage()
+# cropImage()
 
-# img = cv2.imread(PATH_TO_OUTPUT+'image13/fragment37.jpg',
-#                  flags=cv2.IMREAD_COLOR)
+# Image reading
+img = cv2.imread(PATH_TO_OUTPUT+'image13/fragment37.jpg', flags=cv2.IMREAD_COLOR)
 
-# kernel = np.array([[0, -1, 0],
-#                    [-1, 5, -1],
-#                    [0, -1, 0]])
 
-# image_sharp = cv2.filter2D(src=img, ddepth=-1, kernel=kernel)
-# imgtest = 255 - image_sharp
-# cv2.imshow('image', imgtest)
-# cv2.waitKey(0)
+# ----------------------------------------------- mau ----------------------------------------------- #
+'''
+    1. Invert colors
+    2. Gamma correction with 2 value
+    3. Sharpening
+'''
+# Invert colors
+imgInvert = 255 - img
+
+# Gamma correction
+img_gamma = imgInvert/255.0
+im_power_law_transformation = cv2.pow(img_gamma,2)
+
+# Sharpening
+kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
+mauImage = cv2.filter2D(src=im_power_law_transformation, ddepth=-1, kernel=kernel)
+
+
+# ----------------------------------------------- javi --------------------------------------------- #
+'''
+    1. Median Blur
+    2. Registration
+    3. Adaptive Gaussian Thresholding
+'''
+img2 = cv2.imread(PATH_TO_OUTPUT+'image13/fragment37.jpg', 0)
+
+# Median Blur
+blur = cv2.medianBlur(img2,1)
+
+# Registration
+c = 255/(np.log(1 + np.max(blur))) 
+log_transformed = c * np.log(1 + blur) 
+log_transformed = np.array(log_transformed, dtype = np.uint8)
+
+# Adaptive Gaussian Thresholding
+javiImage = cv2.adaptiveThreshold(log_transformed,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
+            cv2.THRESH_BINARY,11,2)
+
+
+# ----------------------------------------------- wil ---------------------------------------------- #
+'''
+    1. Fragmentation
+    2. Gray scale
+    3. Histogram
+'''
+# Gray scale conversion
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Histogram
+wilImage = cv2.equalizeHist(gray)
+
+
+# ----------------------------------------------- Image visualization --------------------------------------------- #
+cv2.imshow('mau', mauImage)
+cv2.imshow('javi', javiImage)
+cv2.imshow('wil', wilImage)
+cv2.waitKey(0)
+cv2.destroyAllWindows() 
