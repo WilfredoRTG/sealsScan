@@ -92,8 +92,8 @@ wilImage = cv2.equalizeHist(gray)
 
 
 # ----------------------------------------------- Image visualization --------------------------------------------- #
-cv2.imshow('mau', mauImage)
-cv2.imshow('javi', javiImage)
+cv2.imshow('normalImage', img)
+cv2.imshow('javi', gray)
 cv2.imshow('wil', wilImage)
 cv2.waitKey(0)
 cv2.destroyAllWindows() 
