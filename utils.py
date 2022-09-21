@@ -27,7 +27,7 @@ def plot_colors(hist, centroids, hexa=False):
     RGBColors = []
     for (percent, color) in zip(hist, centroids):
         # plot the relative percentage of each cluster
-        colorRGB = color.astype("uint8").tolist()
+        colorRGB = (color*255).astype("uint8").tolist()
         RGBColors.append(color.astype("uint8").tolist())
         colors.append(rgb_to_hex(colorRGB[0],colorRGB[1], colorRGB[2]))
         # colors.append(colorRGB)
