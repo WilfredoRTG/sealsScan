@@ -46,7 +46,7 @@ for key, value in colorsRep.items():
 
 ax = plt.axes()
 ax.set_facecolor("black")
-plt.figure("Histogram in fragment")
+# plt.figure("Histogram in fragment")
 plt.xlabel("Colors")
 plt.ylabel("Repetitions")
 plt.title("Predominant colors in fragment")
@@ -54,3 +54,5 @@ plt.title("Predominant colors in fragment")
 for i in range(len(colorsFrag)):
     plt.bar(colorsFrag[i], highers[i], 
             color = [colorsFrag[i]])
+
+plt.show()

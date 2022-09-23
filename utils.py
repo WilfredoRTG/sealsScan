@@ -32,8 +32,8 @@ def plot_colors(hist, centroids, hexa=False):
         colors.append(rgb_to_hex(colorRGB[0],colorRGB[1], colorRGB[2]))
         # colors.append(colorRGB)
         percentages.append(percent)
-    
-    plt.figure("Histogram with K-Means")
+    ax = plt.axes()
+    ax.set_facecolor("black")
     plt.xlabel("Hexadecimal Colors")
     plt.ylabel("Percentage")
     plt.title("Percentage of each color")
@@ -42,6 +42,7 @@ def plot_colors(hist, centroids, hexa=False):
         plt.bar(colors[i], percentages[i], 
         color = [colors[i]], 
         width = 0.4)
+    plt.show()
 
     if hexa:
         return colors
