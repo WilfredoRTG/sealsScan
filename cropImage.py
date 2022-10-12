@@ -36,7 +36,7 @@ def fragment(pathOutput, filename):
 # cropImage()
 
 # Image reading
-img = cv2.imread(PATH_TO_OUTPUT+'image13/fragment37.jpg', flags=cv2.IMREAD_COLOR)
+img = cv2.imread(PATH_TO_OUTPUT+'image36/fragment30.jpg', flags=cv2.IMREAD_COLOR)
 
 
 # ----------------------------------------------- mau ----------------------------------------------- #
@@ -63,7 +63,7 @@ mauImage = cv2.filter2D(src=im_power_law_transformation, ddepth=-1, kernel=kerne
     2. Registration
     3. Adaptive Gaussian Thresholding
 '''
-img2 = cv2.imread(PATH_TO_OUTPUT+'image13/fragment37.jpg', 0)
+img2 = cv2.imread(PATH_TO_OUTPUT+'image32/fragment27.jpg', 0)
 
 # Median Blur
 blur = cv2.medianBlur(img2,1)
