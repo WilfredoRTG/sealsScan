@@ -36,7 +36,7 @@ def fragment(pathOutput, filename):
 # cropImage()
 
 # Image reading
-img = cv2.imread(PATH_TO_OUTPUT+'image36/fragment30.jpg', flags=cv2.IMREAD_COLOR)
+img = cv2.imread('big_seal.png')
 
 
 # ----------------------------------------------- mau ----------------------------------------------- #
@@ -46,10 +46,10 @@ img = cv2.imread(PATH_TO_OUTPUT+'image36/fragment30.jpg', flags=cv2.IMREAD_COLOR
     3. Sharpening
 '''
 # Invert colors
-imgInvert = 255 - img
+# imgInvert = 255 - img
 
 # Gamma correction
-img_gamma = imgInvert/255.0
+img_gamma = img/255.0
 im_power_law_transformation = cv2.pow(img_gamma,2)
 
 # Sharpening
@@ -58,42 +58,42 @@ mauImage = cv2.filter2D(src=im_power_law_transformation, ddepth=-1, kernel=kerne
 
 
 # ----------------------------------------------- javi --------------------------------------------- #
-'''
-    1. Median Blur
-    2. Registration
-    3. Adaptive Gaussian Thresholding
-'''
-img2 = cv2.imread(PATH_TO_OUTPUT+'image32/fragment27.jpg', 0)
+# '''
+#     1. Median Blur
+#     2. Registration
+#     3. Adaptive Gaussian Thresholding
+# '''
+# img2 = cv2.imread(PATH_TO_OUTPUT+'image32/fragment27.jpg', 0)
 
-# Median Blur
-blur = cv2.medianBlur(img2,1)
+# # Median Blur
+# blur = cv2.medianBlur(img2,1)
 
-# Registration
-c = 255/(np.log(1 + np.max(blur))) 
-log_transformed = c * np.log(1 + blur) 
-log_transformed = np.array(log_transformed, dtype = np.uint8)
+# # Registration
+# c = 255/(np.log(1 + np.max(blur))) 
+# log_transformed = c * np.log(1 + blur) 
+# log_transformed = np.array(log_transformed, dtype = np.uint8)
 
-# Adaptive Gaussian Thresholding
-javiImage = cv2.adaptiveThreshold(log_transformed,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
-            cv2.THRESH_BINARY,11,2)
+# # Adaptive Gaussian Thresholding
+# javiImage = cv2.adaptiveThreshold(log_transformed,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
+#             cv2.THRESH_BINARY,11,2)
 
 
 # ----------------------------------------------- wil ---------------------------------------------- #
-'''
-    1. Fragmentation
-    2. Gray scale
-    3. Histogram
-'''
-# Gray scale conversion
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# '''
+#     1. Fragmentation
+#     2. Gray scale
+#     3. Histogram
+# '''
+# # Gray scale conversion
+# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-# Histogram
-wilImage = cv2.equalizeHist(gray)
+# # Histogram
+# wilImage = cv2.equalizeHist(gray)
 
 
 # ----------------------------------------------- Image visualization --------------------------------------------- #
 cv2.imshow('normalImage', img)
-cv2.imshow('javi', gray)
-cv2.imshow('wil', wilImage)
+cv2.imshow('mau', mauImage)
+# cv2.imshow('wil', wilImage)
 cv2.waitKey(0)
 cv2.destroyAllWindows() 
