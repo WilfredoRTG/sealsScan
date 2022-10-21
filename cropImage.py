@@ -16,7 +16,8 @@ def cropImage():
 
 
 def fragment(pathOutput, filename):
-    img = cv2.imread(PATH_TO_DATASET + filename)
+    # img = cv2.imread(PATH_TO_DATASET + filename)
+    img = cv2.imread(filename)
     # Where we want to start and finish in row and column
     width, height, channels = img.shape
     i = 0
@@ -34,66 +35,66 @@ def fragment(pathOutput, filename):
 
 
 # cropImage()
-
+fragment("./test/image2/", "masked_image2.jpg")
 # Image reading
-img = cv2.imread('big_seal.png')
+# img = cv2.imread('big_seal.png')
 
 
-# ----------------------------------------------- mau ----------------------------------------------- #
-'''
-    1. Invert colors
-    2. Gamma correction with 2 value
-    3. Sharpening
-'''
-# Invert colors
-# imgInvert = 255 - img
-
-# Gamma correction
-img_gamma = img/255.0
-im_power_law_transformation = cv2.pow(img_gamma,2)
-
-# Sharpening
-kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
-mauImage = cv2.filter2D(src=im_power_law_transformation, ddepth=-1, kernel=kernel)
-
-
-# ----------------------------------------------- javi --------------------------------------------- #
+# # ----------------------------------------------- mau ----------------------------------------------- #
 # '''
-#     1. Median Blur
-#     2. Registration
-#     3. Adaptive Gaussian Thresholding
+#     1. Invert colors
+#     2. Gamma correction with 2 value
+#     3. Sharpening
 # '''
-# img2 = cv2.imread(PATH_TO_OUTPUT+'image32/fragment27.jpg', 0)
+# # Invert colors
+# # imgInvert = 255 - img
 
-# # Median Blur
-# blur = cv2.medianBlur(img2,1)
+# # Gamma correction
+# img_gamma = img/255.0
+# im_power_law_transformation = cv2.pow(img_gamma,2)
 
-# # Registration
-# c = 255/(np.log(1 + np.max(blur))) 
-# log_transformed = c * np.log(1 + blur) 
-# log_transformed = np.array(log_transformed, dtype = np.uint8)
-
-# # Adaptive Gaussian Thresholding
-# javiImage = cv2.adaptiveThreshold(log_transformed,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
-#             cv2.THRESH_BINARY,11,2)
+# # Sharpening
+# kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
+# mauImage = cv2.filter2D(src=im_power_law_transformation, ddepth=-1, kernel=kernel)
 
 
-# ----------------------------------------------- wil ---------------------------------------------- #
-# '''
-#     1. Fragmentation
-#     2. Gray scale
-#     3. Histogram
-# '''
-# # Gray scale conversion
-# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# # ----------------------------------------------- javi --------------------------------------------- #
+# # '''
+# #     1. Median Blur
+# #     2. Registration
+# #     3. Adaptive Gaussian Thresholding
+# # '''
+# # img2 = cv2.imread(PATH_TO_OUTPUT+'image32/fragment27.jpg', 0)
 
-# # Histogram
-# wilImage = cv2.equalizeHist(gray)
+# # # Median Blur
+# # blur = cv2.medianBlur(img2,1)
+
+# # # Registration
+# # c = 255/(np.log(1 + np.max(blur))) 
+# # log_transformed = c * np.log(1 + blur) 
+# # log_transformed = np.array(log_transformed, dtype = np.uint8)
+
+# # # Adaptive Gaussian Thresholding
+# # javiImage = cv2.adaptiveThreshold(log_transformed,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
+# #             cv2.THRESH_BINARY,11,2)
 
 
-# ----------------------------------------------- Image visualization --------------------------------------------- #
-cv2.imshow('normalImage', img)
-cv2.imshow('mau', mauImage)
-# cv2.imshow('wil', wilImage)
-cv2.waitKey(0)
-cv2.destroyAllWindows() 
+# # ----------------------------------------------- wil ---------------------------------------------- #
+# # '''
+# #     1. Fragmentation
+# #     2. Gray scale
+# #     3. Histogram
+# # '''
+# # # Gray scale conversion
+# # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# # # Histogram
+# # wilImage = cv2.equalizeHist(gray)
+
+
+# # ----------------------------------------------- Image visualization --------------------------------------------- #
+# cv2.imshow('normalImage', img)
+# cv2.imshow('mau', mauImage)
+# # cv2.imshow('wil', wilImage)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows() 
