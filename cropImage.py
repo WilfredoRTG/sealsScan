@@ -4,8 +4,8 @@ import os
 import numpy as np
 
 PATH_TO_DATASET = 'dataSet/'
-PATH_TO_OUTPUT = 'cropImages/'
-SIZE_OF_FRAGMENT = 500
+PATH_TO_OUTPUT = 'cropImages2/'
+SIZE_OF_FRAGMENT = 125
 
 # Read images from dataSet folder and crop them by fragments of 500x500px
 def cropImage():
@@ -16,8 +16,8 @@ def cropImage():
 
 
 def fragment(pathOutput, filename):
-    # img = cv2.imread(PATH_TO_DATASET + filename)
-    img = cv2.imread(filename)
+    img = cv2.imread(PATH_TO_DATASET + filename)
+    # img = cv2.imread(filename)
     # Where we want to start and finish in row and column
     width, height, channels = img.shape
     i = 0
@@ -27,6 +27,7 @@ def fragment(pathOutput, filename):
         while j < height:
             fragment += 1
             crop_img = img[i:i+SIZE_OF_FRAGMENT, j:j+SIZE_OF_FRAGMENT]
+            print(f'Fragment {fragment} of image {filename}')
             cv2.imwrite(pathOutput + 'fragment' +
                         str(fragment) + '.jpg', crop_img)
             j += SIZE_OF_FRAGMENT
@@ -34,8 +35,8 @@ def fragment(pathOutput, filename):
         j = 0
 
 
-# cropImage()
-fragment("./test/image2/", "masked_image2.jpg")
+cropImage()
+# fragment("./test/image2/", "masked_image2.jpg")
 # Image reading
 # img = cv2.imread('big_seal.png')
 
