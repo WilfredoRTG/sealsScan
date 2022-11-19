@@ -11,15 +11,15 @@ PATH_TO_OUTPUT = 'cropImages/'
 MIN_MATCH_COUNT = 10
 img1 = cv.imread('test-enhanced.png',0)          # queryImage
 img3 = cv.imread('test2-enhanced.png',0)          # queryImage
-img2 = cv.imread(PATH_TO_OUTPUT+'image32/fragment27.jpg', flags=cv.IMREAD_COLOR)
+img2 = cv.imread(PATH_TO_OUTPUT+'image16/fragment26.jpg', flags=cv.IMREAD_COLOR)
 
 newIm = np.concatenate((img1, img3), axis=0)
 
 
 gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 #-------------------------------------------------
-# Histogram
-# wilImage = cv2.equalizeHist(gray)
+#Histogram
+#wilImage = cv2.equalizeHist(gray)
 #-------------------------------------------------
 
 # Sharpening
