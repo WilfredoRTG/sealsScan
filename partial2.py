@@ -4,8 +4,8 @@ PATH_TO_DATASET = 'dataSet/DJI_'
 PATH_TO_OUTPUT = 'cropImages/'
 
 
-trainImg = cv2.imread('test-enhanced.png')
-trainImg2 = cv2.imread('test2-enhanced.png')
+trainImg = cv2.imread('test1_enhanced.jpg')
+trainImg2 = cv2.imread('test2_enhanced.jpg')
 # trainImg3 = cv2.imread('test4_1.png')
 
 newIm = np.concatenate((trainImg, trainImg2), axis=0)
@@ -17,7 +17,7 @@ kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
 trainGray = cv2.filter2D(src=gray2, ddepth=-1, kernel=kernel)
 
 
-img = cv2.imread(PATH_TO_OUTPUT+'image12/fragment11.jpg', flags=cv2.IMREAD_COLOR)
+img = cv2.imread(PATH_TO_OUTPUT+'image31/fragment17.jpg', flags=cv2.IMREAD_COLOR)
 # img = cv2.imread(PATH_TO_DATASET+'0195.TIF', flags=cv2.IMREAD_COLOR)
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

@@ -2,78 +2,148 @@ import tensorflow as tf
 import numpy as np
 import os
 from keras.models import load_model
-from PIL import Image, ImageOps #Install pillow instead of PIL
+from PIL import Image, ImageOps  # Install pillow instead of PIL
+import cv2
+from utils import applyFilters
+from matplotlib import pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score
 
-class_names = ['agua','focas','rocas']
-model = load_model('model.h5', compile=False)
+class_names = ['agua', 'focas', 'rocas']
+# model = load_model('model.h5', compile=False)
+
 PATH_TO_DATASET = "testImages/"
-PATH_TO_FRAGMENTS = 'cropImages2/'
+PATH_TO_FRAGMENTS = 'image29Filter/'
+# PATH_TO_FRAGMENTS = 'cropImages2/'
+PATH_TO_RESULTS_OWN = "ResultsOwnCNN/resultsFilter/"
+PATH_TO_REVIEW_OWN = "ResultsOwnCNN/reviewsFilter/"
 
 img_height = 180
 img_width = 180
-imagePath = "image29/"
+imagePath = PATH_TO_FRAGMENTS
+# imagePath = PATH_TO_DATASET + "foca/"
 
 
-model = load_model('model.h5', compile=False)
-# data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-# for imageFragment in os.listdir(PATH_TO_FRAGMENTS + imagePath):
-#     path = PATH_TO_FRAGMENTS + imagePath + imageFragment
-#     # image = Image.open(PATH_TO_FRAGMENTS + image  + "fragment" + str(i) + ".jpg").convert('RGB')
-#     # Replace this with the path to your image
-#     # print(PATH_TO_FRAGMENTS + image  + "fragment" + str(i) + ".jpg")
-#     image = Image.open(path).convert('RGB')
+def classifier(modelToLoad):
+    model = load_model(modelToLoad, compile=False)
+    y_pred = []
+    y_true = []
+    arrayFocas = []
+    # for image in os.listdir(PATH_TO_FRAGMENTS):
+    for imageFragment in os.listdir(imagePath):
+        # img = tf.keras.utils.load_img(
+        #     PATH_TO_FRAGMENTS + imagePath + "/" + imageFragment, target_size=(img_height, img_width)
+        # )
+        path = imagePath + "/" + imageFragment
+        imgToWrite = cv2.imread(path)
+        img = tf.keras.utils.load_img(
+            path, target_size=(img_height, img_width)
+        )
 
-#     #resize the image to a 224x224 with the same strategy as in TM2:
-#     #resizing the image to be at least 224x224 and then cropping from the center
-#     size = (224, 224)
-#     image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
+        img_array = tf.keras.utils.img_to_array(img)
+        img_array = tf.expand_dims(img_array, 0)  # Create a batch
 
-#     #turn the image into a numpy array
-#     image_array = np.asarray(image)
+        predictions = model.predict(img_array)
+        score = tf.nn.softmax(predictions[0])
 
-#     # Normalize the image
-#     normalized_image_array = (image_array.astype(np.float32) / 127.0) - 1
+        confidence_score = np.max(score)
 
-#     # Load the image into the array
-#     data[0] = normalized_image_array
+        if ((class_names[np.argmax(score)]) == "focas") and confidence_score > 0.8:
+            pathToResults = PATH_TO_RESULTS_OWN + imageFragment
+            arrayFocas.append(score)
+            cv2.imwrite(pathToResults, imgToWrite)
+            print(imageFragment, "es una foca con un",
+                  100 * confidence_score, "% de certeza")
 
-#     # run the inference
-#     prediction = model.predict(data)
-#     index = np.argmax(prediction)
-#     class_name = class_names[index]
-#     confidence_score = prediction[0][index]
+        if ((class_names[np.argmax(score)]) == "focas") and (confidence_score > 0.5 and confidence_score < 0.8):
+            pathToReview = PATH_TO_REVIEW_OWN + imageFragment
+            arrayFocas.append(score)
+            cv2.imwrite(pathToReview, imgToWrite)
+            print(imageFragment, "es una foca con un",
+                  100 * confidence_score, "% de certeza")
 
-#     if(class_name=="Focas" ):
-#         print('Class: ', class_name, "Confidence score: ", confidence_score, "Image: ", imageFragment)
+        data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+
+    return y_pred, y_true, class_names
+    # np.save('redAntigua.npy', arrayFocas)
+    # np.save('redAntiguaRocas.npy', arrayRocas)
 
 
+'''
+Que tengo?
+- 3 carpetas con imagenes de focas, rocas y agua con filtros
+- Modelo por por probar
+'''
 
-arrayFocas = []
-# arrayRocas = []
 
-# for image in os.listdir(PATH_TO_FRAGMENTS):
-for imageFragment in os.listdir(PATH_TO_FRAGMENTS + imagePath):
-    img = tf.keras.utils.load_img(
-        PATH_TO_FRAGMENTS + imagePath + "/" + imageFragment, target_size=(img_height, img_width)
-    )
+def contructorOfCM(modelToLoad, folderOfImages, classNames, height, width, NUMBER_AGUA=10, NUMBER_FOCAS=15, NUMBER_ROCAS=20):
 
-    img_array = tf.keras.utils.img_to_array(img)
-    img_array = tf.expand_dims(img_array, 0) # Create a batch
-
-    predictions = model.predict(img_array)
-    score = tf.nn.softmax(predictions[0])
-    # index = np.argmax(predictions)
-    # confidence_score = predictions[0][index]
-    confidence_score = np.max(score)
-    if ((class_names[np.argmax(score)]) == "focas") and confidence_score>0.8:
-        arrayFocas.append(score)
-        print(imageFragment, "es una foca con un", 100 * confidence_score, "% de certeza")
-
-    if ((class_names[np.argmax(score)]) == "focas") and (confidence_score>0.5 and confidence_score<0.8):
-        arrayFocas.append(score)
-        print(imageFragment, "es una foca con un", 100 * confidence_score, "% de certeza")
+    model = load_model(modelToLoad, compile=False)
+    countFocas = 0
+    countRocas = 0
+    countAgua = 0
+    y_true = []
+    y_pred = []
 
     data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+    for folder in os.listdir(folderOfImages):
+        for image in os.listdir(folderOfImages + folder):
 
-np.save('redAntigua.npy', arrayFocas)
-# np.save('redAntiguaRocas.npy', arrayRocas)
+            path = folderOfImages + folder + "/" + image
+            # img = tf.keras.utils.load_img(
+            # path, target_size=(height, width)
+            # )
+            # img_array = tf.keras.utils.img_to_array(img)
+            # img_array = tf.expand_dims(img_array, 0) # Create a batch
+
+            # predictions = model.predict(img_array)
+            # score = tf.nn.softmax(predictions[0])
+
+            image = Image.open(path).convert('RGB')
+            size = (height, width)
+            image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
+            image_array = np.asarray(image)
+            normalized_image_array = (
+                image_array.astype(np.float32) / 127.0) - 1
+            data[0] = normalized_image_array
+            prediction = model.predict(data)
+            index = np.argmax(prediction)
+            class_name = classNames[index]
+
+            if folder == classNames[0]:
+                y_true.append(classNames[0])
+                y_pred.append(class_name)
+                countAgua += 1
+                if countAgua == NUMBER_ROCAS:
+                    break
+            elif folder == classNames[1]:
+                y_true.append(classNames[1])
+                y_pred.append(class_name)
+                countFocas += 1
+                if countFocas == NUMBER_FOCAS:
+                    break
+            elif folder == classNames[2]:
+                y_true.append(classNames[2])
+                y_pred.append(class_name)
+                countRocas += 1
+                if countRocas == NUMBER_AGUA:
+                    break
+
+    cm = confusion_matrix(y_true, y_pred, labels=classNames)
+    accuracy_rocas = cm[0][0]/(NUMBER_ROCAS)
+    accuracy_focas = cm[1][1]/(NUMBER_FOCAS)
+    accuracy_agua = cm[2][2]/(NUMBER_AGUA)
+    score = accuracy_score(y_true, y_pred)
+
+    print("Accuracy focas: ", accuracy_focas)
+    print("Accuracy rocas: ", accuracy_rocas)
+    print("Accuracy agua: ", accuracy_agua)
+    print("Accuracy: ", score)
+
+    disp = ConfusionMatrixDisplay(
+        confusion_matrix=cm, display_labels=classNames)
+    disp.plot()
+    plt.show()
+
+
+contructorOfCM("keras_model2.h5", "testImages/",
+               ["rocas", "focas", "agua"], 224, 224)

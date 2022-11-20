@@ -4,25 +4,30 @@ import os
 from keras.models import load_model
 from PIL import Image, ImageOps #Install pillow instead of PIL
 import cv2
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score
 
 class_names = ['Rocas','Focas','Agua']
 # model = keras.models.load_model('keras_model.h5', compile=False)
-PATH_TO_DATASET = "testImages/"
-PATH_TO_FRAGMENTS = 'cropImages2/'
+# PATH_TO_FRAGMENTS = 'cropImages2/'
+PATH_TO_FRAGMENTS = 'image29Filter/'
 
 img_height = 224
 img_width = 224
-imagePath = "image29/"
-PATH_TO_RESULTS = "results/"
-PATH_TO_REVIEW = "review/"
+# imagePath = PATH_TO_FRAGMENTS + "image29/"
+imagePath = PATH_TO_FRAGMENTS 
+PATH_TO_RESULTS = "ResultsPre-trained/resultsFilter/"
+PATH_TO_REVIEW = "ResultsPre-trained/reviewsFilter/"
+
 array = []
 
 model = load_model('keras_model2.h5', compile=False)
-data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+data = np.ndarray(shape=(1, img_height, img_width, 3), dtype=np.float32)
 count = 1
 
-for imageFragment in os.listdir(PATH_TO_FRAGMENTS + imagePath):
-    path = PATH_TO_FRAGMENTS + imagePath + imageFragment
+# for imageFragment in os.listdir(PATH_TO_FRAGMENTS + imagePath):
+for imageFragment in os.listdir(imagePath):
+    # path = PATH_TO_FRAGMENTS + imagePath + imageFragment
+    path = imagePath + imageFragment
     img = cv2.imread(path)
 
     # image = Image.open(PATH_TO_FRAGMENTS + image  + "fragment" + str(i) + ".jpg").convert('RGB')
@@ -32,7 +37,7 @@ for imageFragment in os.listdir(PATH_TO_FRAGMENTS + imagePath):
 
     #resize the image to a 224x224 with the same strategy as in TM2:
     #resizing the image to be at least 224x224 and then cropping from the center
-    size = (224, 224)
+    size = (img_width, img_width)
     image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
 
     #turn the image into a numpy array
@@ -50,17 +55,32 @@ for imageFragment in os.listdir(PATH_TO_FRAGMENTS + imagePath):
     class_name = class_names[index]
     confidence_score = prediction[0][index]
 
+    # if(class_name=="Focas" and confidence_score > 0.8):
+    #     array.append(confidence_score)
+    #     pathToResults = PATH_TO_RESULTS_OWN + imageFragment
+    #     # cv2.imwrite(pathToResults, img)
+    #     print("foca")
+    #     print(imageFragment, "es una foca con un",  confidence_score, "% de certeza")
+
+    # if(class_name=="Focas" and (confidence_score > 0.5 and confidence_score < 0.8)):
+    #     array.append(confidence_score)
+    #     pathToReview = PATH_TO_REVIEW_OWN + imageFragment
+    #     # cv2.imwrite(pathToReview, img)
+    #     print("foca review")
+    #     print(imageFragment, "es una foca con un", confidence_score, "% de certeza")
+    # count += 1
+
     if(class_name=="Focas" and confidence_score > 0.8):
         array.append(confidence_score)
         pathToResults = PATH_TO_RESULTS + imageFragment
         cv2.imwrite(pathToResults, img)
-        print(imageFragment, "es una foca con un", 100 * confidence_score, "% de certeza")
+        print(imageFragment, "es una foca con un", 100* confidence_score, "% de certeza")
 
     if(class_name=="Focas" and (confidence_score > 0.5 and confidence_score < 0.8)):
         array.append(confidence_score)
         pathToReview = PATH_TO_REVIEW + imageFragment
         cv2.imwrite(pathToReview, img)
-        print(imageFragment, "es una foca con un", 100 * confidence_score, "% de certeza")
+        print(imageFragment, "es una foca con un", 100* confidence_score, "% de certeza")
     count += 1
 
 np.save('redNueva.npy', array)

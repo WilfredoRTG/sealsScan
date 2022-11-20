@@ -1,6 +1,7 @@
 # import the necessary packages
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2
 
 def rgb_to_hex(r, g, b):
     return ('#{:X}{:X}{:X}').format(r, g, b)
@@ -48,3 +49,15 @@ def plot_colors(hist, centroids, hexa=False):
         return colors
     else:
         return RGBColors
+
+def applyFilters(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Histogram
+    histogram = cv2.equalizeHist(gray)
+
+    # Sharpening
+    kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
+    resultImage = cv2.filter2D(src=histogram, ddepth=-1, kernel=kernel)
+
+    return resultImage
