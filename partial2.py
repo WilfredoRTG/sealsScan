@@ -17,7 +17,7 @@ kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
 trainGray = cv2.filter2D(src=gray2, ddepth=-1, kernel=kernel)
 
 
-img = cv2.imread(PATH_TO_OUTPUT+'image32/fragment28.jpg', flags=cv2.IMREAD_COLOR)
+img = cv2.imread(PATH_TO_OUTPUT+'image12/fragment11.jpg', flags=cv2.IMREAD_COLOR)
 # img = cv2.imread(PATH_TO_DATASET+'0195.TIF', flags=cv2.IMREAD_COLOR)
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
