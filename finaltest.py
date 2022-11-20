@@ -57,9 +57,10 @@ if len(good)>MIN_MATCH_COUNT:
     pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
     dst = cv.perspectiveTransform(pts,M)
     wilImage = cv.polylines(wilImage,[np.int32(dst)],True,255,3, cv.LINE_AA)
-    print(len(good))
+    print("Es foca")
 else:
-    print( "Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT) )
+    print("Son piedras")
+    # print( "Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT) )
     matchesMask = None
 
 draw_params = dict(matchColor = (0,255,0), # draw matches in green color
