@@ -20,7 +20,7 @@ umbral = load('umbral.npy')
 #                 shutil.move(src_path, dst_path)
 #     break
 
-image = "image31/"
+image = "image29/"
 
 for imageFragment in os.listdir(PATH_TO_CROP + image):
     repetitions = {}

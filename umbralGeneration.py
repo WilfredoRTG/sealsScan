@@ -18,5 +18,4 @@ for image in os.listdir(PATH_TO_WATER):
 
     umbral = list(colorUmbral.keys())
 
-print(umbral)
 save('umbral.npy', umbral)
